@@ -783,6 +783,8 @@ mexican_production_movies
 
 
 # # Credits DataSet
+# 
+# Inconclude
 
 # In[215]:
 
@@ -793,7 +795,7 @@ credits_parquet = pd.read_parquet("parquet_data/credits_parquet.parquet")
 # In[217]:
 
 
-sys.getsizeof(credits_parquet) / 1000000
+# sys.getsizeof(credits_parquet) / 1000000
 
 
 # In[252]:
@@ -826,10 +828,47 @@ credits_parquet.head()
 movies_df.loc[0]
 
 
-# In[258]:
+# # Spoken Language field
+
+# In[280]:
 
 
-get_ipython().system('jupyter nbconvert --to script etl.ipynb')
+movies_df["spoken_languages"][1]
+
+
+# In[ ]:
+
+
+spoken_languages_mask = movies_df["spoken_languages"].str.match(empty_list_pattern)
+
+
+# In[276]:
+
+
+movies_df.loc[spoken_languages_mask, "spoken_languages"] = "[{'iso_639_1': 'Unknown', 'name': 'Unknown'}]"
+movies_df["spoken_languages"] = movies_df["spoken_languages"].apply(safe_literal_eval)
+
+
+# # Building Functions
+
+# In[282]:
+
+
+movies_df.head(1)
+
+
+# In[288]:
+
+
+def count_movies_by_original_languages(language: str) -> int:
+
+    return {"number of movie": movies_df.loc[movies_df["original_language"] == language].shape[0]}
+
+
+# In[287]:
+
+
+## get_ipython().system('jupyter nbconvert --to script etl.ipynb')
 
 
 # In[ ]:
