@@ -92,7 +92,7 @@ movies_df.isnull().sum()
 # In[13]:
 
 
-def dtype_checker(data: pd.DataFrame | pd.Series, column: str, data_type) -> list:
+def dtype_checker(data: pd.DataFrame, column: str, data_type) -> list:
     """
     Returns an array of indexes of rows with a different data type in the specified column.
 
