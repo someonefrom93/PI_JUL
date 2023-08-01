@@ -770,16 +770,14 @@ movies_df.loc[(movies_df["production_countries"].apply(lambda country: "Mexico" 
 # In[212]:
 
 
-mexican_production_movies = movies_df.loc[(movies_df["production_countries"].apply(lambda country: "Mexico" in {item["name"] for item in country}))
-              
-              & (movies_df["production_countries"].apply(lambda country_len: len(country_len) == 1))
-                , ["id", "original_language", "title", "production_countries"]]
+# mexican_production_movies = movies_df.loc[(movies_df["production_countries"].apply(lambda country: "Mexico" in {item["name"] for item in country}))
+ #             
+ #             & (movies_df["production_countries"].apply(lambda country_len: len(country_len) == 1))
+ #               , ["id", "original_language", "title", "production_countries"]]
 
 
 # In[213]:
 
-
-mexican_production_movies
 
 
 # # Credits DataSet
@@ -789,7 +787,7 @@ mexican_production_movies
 # In[215]:
 
 
-credits_parquet = pd.read_parquet("parquet_data/credits_parquet.parquet")
+# credits_parquet = pd.read_parquet("parquet_data/credits_parquet.parquet")
 
 
 # In[217]:
@@ -801,25 +799,25 @@ credits_parquet = pd.read_parquet("parquet_data/credits_parquet.parquet")
 # In[252]:
 
 
-credits_parquet.shape
+# credits_parquet.shape
 
 
 # In[257]:
 
 
-ast.literal_eval(credits_parquet["crew"][0])[:2]
+# ast.literal_eval(credits_parquet["crew"][0])[:2]
 
 
 # In[256]:
 
 
-ast.literal_eval(credits_parquet["cast"][0])[:2]
+# ast.literal_eval(credits_parquet["cast"][0])[:2]
 
 
 # In[229]:
 
 
-credits_parquet.head()
+# credits_parquet.head()
 
 
 # In[251]:
