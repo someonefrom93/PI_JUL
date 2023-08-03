@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from etl import count_movies_by_original_languages, get_runtime_and_release_year, get_collection_information_by_title
+from etl import count_movies_by_original_languages, get_runtime_and_release_year, get_collection_information_by_title, number_of_movies_produced_in_country, production_company_success
 
 app = FastAPI()
 
@@ -17,4 +17,11 @@ def demo_2(title0):
 @app.get("/get_collection_data_by_title/{title2}")
 def demo_3(title2):
     return get_collection_information_by_title(title1=title2)
+
+@app.get("/number_of_movies_produced_in_country/{country_name1}")
+def demo_4(country_name1):
+    return number_of_movies_produced_in_country(country_name=country_name1)
     
+@app.get("/production_company_success/{company_name}")
+def demo_5(company_name):
+    return production_company_success(production_company_name=company_name)
