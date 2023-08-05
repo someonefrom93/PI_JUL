@@ -10,7 +10,6 @@
 import pandas as pd
 import numpy as np
 import ast
-import sys
 
 
 # In[2]:
@@ -879,19 +878,6 @@ def get_runtime_and_release_year(movie_title: str):
     return {"Duracion": runtime_movie, "Año": release_year_movie}
 
 
-# In[104]:
-
-
-import psutil
-
-process = psutil.Process()
-
-print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
-
-
-# In[105]:
-
-
 def get_collection_information_by_title(title1):
 
     # Getting the collection id
@@ -909,14 +895,6 @@ def get_collection_information_by_title(title1):
     return {"Collection name": collection_name, "number_of_movies": number_of_movies, "total_revenue": total_revenue, "mean_revenue": mean_revenue}
 
 
-# In[106]:
-
-
-import psutil
-
-process = psutil.Process()
-
-print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
 
 
 # In[107]:
@@ -941,26 +919,9 @@ def production_company_success(production_company_name):
     return {"production_company_name": production_company_name, "total_revenue": revenue, "number_of_movies_produced": number_of_movies}
 
 
-# In[113]:
-
-
-production_companies_df
-
-
-# In[114]:
-
-
-production_company_success("Pixar Animation Studios")
-
 
 # In[109]:
 
-
-import psutil
-
-process = psutil.Process()
-
-print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
 
 
 # In[110]:
@@ -980,17 +941,7 @@ def director_success(director_name):
     return {"director_name": director_name, "avg_roi": avg_roi, "movies": movies}
 
 
-# In[111]:
 
-
-import psutil
-
-process = psutil.Process()
-
-print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
-
-
-# In[ ]:
 
 
 
