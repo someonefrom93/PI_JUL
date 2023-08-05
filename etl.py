@@ -227,7 +227,8 @@ movies_df.drop(movies_df.loc[~movies_df["release_date"].str.contains(regex_date)
 
 
 # # And now, no further issues to cast this column as date type and grab the year only to create our year field.
-# movies_df['release_year'] = pd.to_datetime(movies_df["release_date"]).dt.year
+
+movies_df['release_year'] = pd.to_datetime(movies_df["release_date"]).dt.year
 
 # In[28]:
 
