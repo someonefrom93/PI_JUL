@@ -5,7 +5,7 @@ app = FastAPI()
 
 @app.get("/")
 def welcome():
-    return print("Welcome to my API. Just add '/docs' to the url to get to know the end points :)")
+    return {"Message": "Welcome to my API. Just add '/docs' to the url to get to know the end points :)"}
 
 @app.get("/count_of_movies_by_language/{lang}")
 def demo_1(lang):
