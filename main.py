@@ -3,11 +3,14 @@ from etl import count_movies_by_original_languages, get_runtime_and_release_year
 
 app = FastAPI()
 
+@app.get("/")
+def welcome():
+    print("Welcome to my API. Just add '/docs' to the url to get to know the end points :)")
+
 @app.get("/count_of_movies_by_language/{lang}")
 def demo_1(lang):
     return count_movies_by_original_languages(language=lang)
     
-
 
 @app.get("/get_runtime_and_release_year_by_title/{title0}")
 def demo_2(title0):
