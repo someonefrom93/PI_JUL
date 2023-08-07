@@ -15,7 +15,7 @@ import sys
 
 # # Reducing data sources (csv files to parquet)
 # 
-# First, let's depurate all fields that wont be needed from our csv files, those csv files will be ignored in the github repo. This code will be commented because this process is run only in my local machine in order to upload only lighwieght parquet files
+# First, let's depurate all fields that wont be needed from our csv files, then those csv files will be ignored in the github repo. This code will be commented because this process is run only in my local machine in order to upload only lighwieght parquet files into the repo
 
 # In[2]:
 
@@ -126,6 +126,41 @@ credits_parquet = pd.read_parquet("parquet_data/credits_parquet.parquet")
 movies_df = pd.read_parquet("parquet_data/movies_parquet.parquet")
 
 
+# In[13]:
+
+
+movies_df.shape
+
+
+# In[14]:
+
+
+movies_df.loc[711]
+
+
+# In[15]:
+
+
+movies_df.head(1)
+
+
+# ### Exploring movies data frame.
+# 
+# * Null Values
+# * Data Types (Its homogeneity)
+
+# In[16]:
+
+
+# Null values
+movies_df.isna().sum()
+
+
+# In[17]:
+
+
+# Data Types
+movies_df.dtypes
 
 
 # ### Data Types Consistency
@@ -171,10 +206,19 @@ def dtype_checker(data: pd.DataFrame, column: str, data_type) -> list:
 
 # It is usefull to get to know what are the default dtype the dataframe is built of. For this, lets check the data type on a single row in the release_date field
 
+# In[19]:
+
+
+type(movies_df["release_date"][0])
 
 
 # Once we get to know the dtype the data is readen, we can see the simple output of the function wich is only  the index position of all that rows with different data type from string
 
+# In[20]:
+
+
+# In the column release_date, the first five instrusive rows position are lited.
+dtype_checker(movies_df, column="release_date", data_type=str)[:5] 
 
 
 # And the above list will be usefull for slicing data and do what may be more comvinience: 
@@ -203,6 +247,17 @@ mask_for_date_intrusives = dtype_checker(movies_df, column="release_date", data_
 movies_df.drop(mask_for_date_intrusives, inplace=True)
 
 
+# In[22]:
+
+
+# And, all that null or numeric field are imputed with this default value.
+movies_df.head()
+
+
+# In[23]:
+
+
+movies_df["release_date"].head()
 
 
 # But there are also "numbers" in this field, and I named numbers between parentesis because, literally, there could be numbers like "1", "2", "121", etc.. they are recognized from the dtype checker function as string, and we are still going to get issues when casting data as date type. See how we can spot those string numbers by regex expresion.
@@ -215,7 +270,10 @@ regex_date = r"^\d{4}-\d{2}-\d{2}$"
 movies_df.loc[~movies_df["release_date"].str.contains(regex_date)]
 
 
+# In[25]:
 
+
+movies_df.loc[~movies_df["release_date"].str.contains(regex_date)].index
 
 
 # In[26]:
@@ -225,13 +283,26 @@ movies_df.loc[~movies_df["release_date"].str.contains(regex_date)]
 movies_df.drop(movies_df.loc[~movies_df["release_date"].str.contains(regex_date)].index, inplace=True)
 
 
+# In[27]:
+
+
+# Trying if it works.
+pd.to_datetime(movies_df["release_date"]).dt.year
+
 
 # # And now, no further issues to cast this column as date type and grab the year only to create our year field.
 
+# In[125]:
+
+
 movies_df['release_year'] = pd.to_datetime(movies_df["release_date"]).dt.year
 
-# In[28]:
 
+# In[126]:
+
+
+# lets take a look at the data frame movies
+movies_df.head()
 
 
 # ### Filling null values on "revenue" and "budget"
@@ -246,8 +317,59 @@ movies_df['release_year'] = pd.to_datetime(movies_df["release_date"]).dt.year
 #         * Nulls
 #     2. Impute and convert
 
+# In[29]:
 
 
+# Revenue field data type
+movies_df["revenue"].dtype
+
+
+# In[30]:
+
+
+movies_df["revenue"].isnull().sum()
+
+
+# In[31]:
+
+
+# Check how many rows aren't: float, int, str. Recall that movies_df has 45466 rows so far.
+len(dtype_checker(movies_df, column="revenue", data_type=float)), len(dtype_checker(movies_df, column="revenue", data_type=int)), len(dtype_checker(movies_df, column="revenue", data_type=str))
+
+
+# Ok so.. We have 0 values that aren't floats, 45466 aren't integers, 45466 aren't str, thus, all values are float. Good
+
+# In[32]:
+
+
+movies_df["revenue"] / 2
+
+
+# In[33]:
+
+
+# Budget field data type
+movies_df["budget"].dtype
+
+
+# In[34]:
+
+
+movies_df['budget'].isnull().sum()
+
+
+# In[35]:
+
+
+len(dtype_checker(movies_df, column="budget", data_type=float)), len(dtype_checker(movies_df, column="budget", data_type=int)), len(dtype_checker(movies_df, column="budget", data_type=str))
+
+
+# Ok so.. We have 45466 values that aren't floats, 45466 aren't integers, 0 aren't str, thus, all values are string. Not too good. Let's just try to cast this as float and see what will happen 
+
+# In[36]:
+
+
+movies_df["budget"].astype(float)
 
 
 # In[37]:
@@ -256,11 +378,20 @@ movies_df['release_year'] = pd.to_datetime(movies_df["release_date"]).dt.year
 movies_df["budget"] = movies_df["budget"].astype(float)
 
 
+# In[38]:
+
+
+movies_df["budget"].dtype, movies_df["budget"].isnull().sum()
 
 
 # ### Creating "return_on_investment" (ROI) fiel
 # 
 # This is what is performed.. divide revenue by budget as float, then fill null values with zero.. after filling nulls replace inifinites by zeros.
+
+# In[39]:
+
+
+movies_df["revenue"].div(movies_df["budget"].astype(float)).fillna(0).replace([np.inf, -np.inf], 0)
 
 
 # In[40]:
@@ -268,6 +399,11 @@ movies_df["budget"] = movies_df["budget"].astype(float)
 
 movies_df["return_on_investment"] = movies_df["revenue"].div(movies_df["budget"].astype(float)).fillna(0).replace([np.inf, -np.inf], 0)
 
+
+# In[41]:
+
+
+movies_df.head()
 
 
 # ### Flatting Nested Data
@@ -287,7 +423,24 @@ movies_df["return_on_investment"] = movies_df["revenue"].div(movies_df["budget"]
 
 # ### Data Modeling on belongs_to_collection Field
 
+# In[42]:
 
+
+# I always get a views of any random objectn in the field in order to have an idea of what is in it.
+movies_df["belongs_to_collection"][0]
+
+
+# In[43]:
+
+
+# What type of object does the field got?
+movies_df.loc[:,"belongs_to_collection"].dtype
+
+
+# In[44]:
+
+
+movies_df["belongs_to_collection"].isnull().sum()
 
 
 # In[45]:
@@ -318,6 +471,19 @@ def safe_literal_eval(x):
 
 belongs_to_collections_df = belongs_to_collections_df.apply(safe_literal_eval)
 
+
+# In[48]:
+
+
+belongs_to_collections_df.head()[0]
+
+
+# In[49]:
+
+
+belongs_to_collections_df
+
+
 # In[50]:
 
 
@@ -335,6 +501,11 @@ collections_df.drop_duplicates(subset=["id"], keep='first', inplace=True)
 
 collections_df.drop(["poster_path", "backdrop_path"], axis=1, inplace=True)
 
+
+# In[53]:
+
+
+collections_df
 
 
 # In[54]:
@@ -366,9 +537,12 @@ movies_df.loc[movies_df["belongs_to_collection"] == "1234567", "belongs_to_colle
 movies_df.rename(columns={"belongs_to_collection": "collection_id"}, inplace=True)
 
 
+# ### Trying out our collectiond_df and new collection_id field in movies_df
+
+# In[57]:
 
 
-
+collections_df.merge(movies_df[["collection_id", "title", "revenue"]], on="collection_id")
 
 
 # ### Flattent genres field
@@ -391,7 +565,16 @@ movies_df.rename(columns={"belongs_to_collection": "collection_id"}, inplace=Tru
 # 
 #         * Grab only ids
 
+# In[58]:
 
+
+movies_df.head(2)
+
+
+# In[59]:
+
+
+movies_df["genres"][0]
 
 
 # In[60]:
@@ -400,6 +583,7 @@ movies_df.rename(columns={"belongs_to_collection": "collection_id"}, inplace=Tru
 empty_list_pattern = r'^\[\]$'
 genre_empy_mask = movies_df["genres"].astype(str).str.match(empty_list_pattern)
 print(genre_empy_mask.sum())
+movies_df[genre_empy_mask].head(2)
 
 
 # In[61]:
@@ -408,6 +592,11 @@ print(genre_empy_mask.sum())
 movies_df.loc[genre_empy_mask, "genres"] = "[{'id': 123456, 'name': 'Unknown'}]"
 
 
+# In[62]:
+
+
+movies_df.loc[genre_empy_mask, "genres"]
+
 
 # In[63]:
 
@@ -415,12 +604,34 @@ movies_df.loc[genre_empy_mask, "genres"] = "[{'id': 123456, 'name': 'Unknown'}]"
 movies_df["genres"] = movies_df["genres"].apply(safe_literal_eval)
 
 
+# In[64]:
+
+
+movies_df["genres"][0]
+
+
+# In[65]:
+
+
+movies_df.explode('genres', ignore_index=True).head(2)#[["genres"]].rename(columns={"genres": "genres_info"})
+
+
+# In[66]:
+
+
+movies_df.explode('genres', ignore_index=True).tail(2)#[["genres"]].rename(columns={"genres": "genres_info"})
+
 
 # In[67]:
 
 
 genres_df = movies_df.explode('genres', ignore_index=True)[["genres"]].rename(columns={"genres": "genres_info"})
 
+
+# In[68]:
+
+
+genres_df
 
 
 # In[69]:
@@ -431,6 +642,7 @@ genres_df["genre_id"] = genres_df["genre_id"].astype(str)
 
 genres_df["genre_name"] = genres_df["genres_info"].apply(lambda genre: genre["name"])
 genres_df.drop(columns="genres_info", inplace=True)
+genres_df
 
 
 # In[70]:
@@ -465,11 +677,18 @@ movies_genres_df.merge(movies_df[["id", "title"]], on='id').merge(genres_df, on=
 movies_df.drop(labels=["genres"], axis=1, inplace=True)
 
 
+# In[75]:
 
+
+movies_df.columns
 
 
 # ### Production Companies Field
 
+# In[76]:
+
+
+movies_df["production_companies"][3]
 
 
 # In[77]:
@@ -478,11 +697,25 @@ movies_df.drop(labels=["genres"], axis=1, inplace=True)
 empty_list_pattern = r'^\[\]$'
 print(movies_df["production_companies"].str.match(empty_list_pattern).sum())
 production_movies_mask = movies_df["production_companies"].str.match(empty_list_pattern)
+production_movies_mask
+
+
+# In[78]:
+
+
+movies_df[production_movies_mask].head(2)
+
 
 # In[79]:
 
 
 movies_df.loc[production_movies_mask, "production_companies"] = "[{'name': 'Unknown', 'id': 123456}]"
+
+
+# In[80]:
+
+
+movies_df.loc[production_movies_mask, "production_companies"]
 
 
 # In[81]:
@@ -511,7 +744,10 @@ production_companies_df.drop("production_companies_info", axis=1, inplace=True)
 production_companies_df.drop_duplicates(subset=["company_id"], keep="first", inplace=True)
 
 
+# In[85]:
 
+
+production_companies_df.dtypes
 
 
 # In[86]:
@@ -520,7 +756,10 @@ production_companies_df.drop_duplicates(subset=["company_id"], keep="first", inp
 production_companies_df["company_id"] = production_companies_df["company_id"].astype(str)
 
 
+# In[87]:
 
+
+production_companies_df.dtypes
 
 
 # DataFrame for the many-to-many relationship
@@ -532,7 +771,13 @@ movies_production_companies_df = movies_df.explode("production_companies", ignor
 movies_production_companies_df["company_id"] = movies_production_companies_df["production_companies_info"].apply(lambda prod_company: prod_company["id"])
 movies_production_companies_df.drop("production_companies_info", axis=1, inplace=True)
 movies_production_companies_df["company_id"] = movies_production_companies_df["company_id"].astype(str)
+movies_production_companies_df.head()
 
+
+# In[89]:
+
+
+movies_production_companies_df.head(2)
 
 
 # ### Trying it out
@@ -565,7 +810,16 @@ movies_df.drop("production_companies", axis=1, inplace=True)
 # * Once we get all rows in production_companies field with an a list with at least one dictionary object, we should be able to apply our safe_literal_eval to convert those strings into the appropiate objects
 # * Then, we could filter information over these nested data (dictionaries in a list) with `.apply()` method wich applies any function on each record. We can use eaither custom funcions (for example, safe_literal_eval is one custom function applied on each record in the production_companies field) or lamba expressions.
 
+# In[93]:
 
+
+movies_df.head(2)
+
+
+# In[94]:
+
+
+movies_df["production_countries"].head(10)
 
 
 # In[95]:
@@ -593,10 +847,36 @@ movies_df.loc[production_countries_empties_mask, "production_countries"]
 movies_df["production_countries"] = movies_df["production_countries"].apply(safe_literal_eval)
 
 
+# In[99]:
+
+
+movies_df.head(1)
+
+
+# In[100]:
+
+
+movies_df.loc[(movies_df["production_countries"].apply(lambda country: "Mexico" in {item["name"] for item in country}))
+              & (movies_df["original_language"] == "en")
+              & (movies_df["production_countries"].apply(lambda country_len: len(country_len) > 1))
+                , ["original_language", "title", "production_countries"]]
+
+
+# In[101]:
+
+
+movies_df.loc[(movies_df["production_countries"].apply(lambda country: "Mexico" in {item["name"] for item in country}))
+              
+              & (movies_df["production_countries"].apply(lambda country_len: len(country_len) == 1))
+                , ["id", "original_language", "title", "production_countries"]]
 
 
 # # Spoken Language field
 
+# In[102]:
+
+
+movies_df["spoken_languages"][1]
 
 
 # In[103]:
@@ -614,6 +894,11 @@ movies_df["spoken_languages"] = movies_df["spoken_languages"].apply(safe_literal
 
 # # Building Functions
 
+# In[105]:
+
+
+movies_df.head(1)
+
 
 # In[106]:
 
@@ -621,6 +906,12 @@ movies_df["spoken_languages"] = movies_df["spoken_languages"].apply(safe_literal
 def count_movies_by_original_languages(language: str):
 
     return {"number of movie": movies_df.loc[movies_df["original_language"] == language].shape[0]}
+
+
+# In[124]:
+
+
+movies_df.head()
 
 
 # In[107]:
@@ -633,6 +924,14 @@ def get_runtime_and_release_year(movie_title: str):
     return {"Duracion": runtime_movie, "Año": release_year_movie}
 
 
+# In[108]:
+
+
+import psutil
+
+process = psutil.Process()
+
+print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
 
 
 # In[109]:
@@ -655,6 +954,14 @@ def get_collection_information_by_title(title1):
     return {"Collection name": collection_name, "number_of_movies": number_of_movies, "total_revenue": total_revenue, "mean_revenue": mean_revenue}
 
 
+# In[110]:
+
+
+import psutil
+
+process = psutil.Process()
+
+print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
 
 
 # In[111]:
@@ -679,8 +986,26 @@ def production_company_success(production_company_name):
     return {"production_company_name": production_company_name, "total_revenue": revenue, "number_of_movies_produced": number_of_movies}
 
 
+# In[113]:
 
 
+production_companies_df
+
+
+# In[114]:
+
+
+production_company_success("Pixar Animation Studios")
+
+
+# In[115]:
+
+
+import psutil
+
+process = psutil.Process()
+
+print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
 
 
 # In[116]:
@@ -698,5 +1023,68 @@ def director_success(director_name):
 
     
     return {"director_name": director_name, "avg_roi": avg_roi, "movies": movies}
+
+
+# In[117]:
+
+
+import psutil
+
+process = psutil.Process()
+
+print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
+
+
+# In[131]:
+
+
+credits_parquet.head()
+
+
+# In[130]:
+
+
+production_companies_df
+
+
+# In[ ]:
+
+
+
+
+
+# In[121]:
+
+
+get_ipython().system('jupyter nbconvert --to script etl.ipynb')
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
 
 
