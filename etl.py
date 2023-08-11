@@ -1025,13 +1025,3 @@ def director_success(director_name):
     return {"director_name": director_name, "avg_roi": avg_roi, "movies": movies}
 
 
-# In[117]:
-
-
-import psutil
-
-process = psutil.Process()
-
-print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
-
-
