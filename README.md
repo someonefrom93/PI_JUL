@@ -26,6 +26,23 @@ Here you will find those iso languages code for trying out this end point [iso l
 
 # My approach
 
-The architecture that I follow is completelly towards functionality and effitiency. For the API you will find the etl.ipynb file with all functionalities taken for getting simple csv file into an end points. How was that get done?
+The architecture that I follow is completelly towards functionality and effitiency. For the API you will find the etl.ipynb file with all functionalities taken for getting simple csv file into an end points. How was that can be get done?
 
 ![ETl flow for end points at Render](images/etl_flow.JPG)
+
+The file .ipynb was used to run tests, and .py is the application. 
+
+# The EDA process
+
+Here I focused on outliers and of they could cause an effect on statisstics. You will see some transformation here also in spite of the previous ETL proccess.. but recall this, the ETL proccess was to delivery end points.. and some significant data was dropped in order to fit this into the memory contraint render enviroment (512mb and 0.5 cpu capability). 
+
+Here is cinluded also the recommendation model. later that code is exported into a .py file
+
+### About the recommender model
+
+This modeln was built upon 2000 records out of the 4k of the dataframe in order to fit this into render. So please try this demo out by inputting Toy Story frist and you will see it works. The prediction performance maybe is not that great.
+
+
+All this job you can see it in the eda.ipynb file and recommender.py file.
+
+![EDA worf flow for recomender](images/eda_work_flow.JPG)
