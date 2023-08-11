@@ -34,6 +34,10 @@ The file .ipynb was used to run tests, and .py is the application.
 
 And this is the deployment url
 
+### IMPORTTANT! 
+
+Please wait a couple minutes for running the application ar render (about 5 to 6 minutes ;)) 
+
 [render deployment](https://demo-1-henry-pi.onrender.com/docs#/)
 
 # The EDA process
