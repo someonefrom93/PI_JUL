@@ -1,4 +1,4 @@
-<em>  #Well Come to MLOps Individual Project by Juan D.</em>
+#Well Come to MLOps Individual Project by Juan D
 
 You will find here one of the thousand approaches to deliver a made up bussiness request.
 
