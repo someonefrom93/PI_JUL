@@ -24,4 +24,8 @@ Here you will find those iso languages code for trying out this end point [iso l
  * Finally you will see the recomender. This is a simple lightwieght recommendation model. It only uses 2000 records out of the almos 45k records of the original csv file. This is because if the dataframe may include the hole sataset, a very large array of cosine similatiries would take 14 gb of ram. Tha's wild. 
 
 
-Two file 
+# My approach
+
+The architecture that I follow is completelly towards functionality and effitiency. For the API you will find the etl.ipynb file with all functionalities taken for getting simple csv file into an end points. How was that get done?
+
+![ETl flow for end points at Render](images/etl_flow.JPG)
