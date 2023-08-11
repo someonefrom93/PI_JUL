@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from etl import count_movies_by_original_languages, get_runtime_and_release_year, get_collection_information_by_title, number_of_movies_produced_in_country, production_company_success, director_success
-
+from recommender import get_recommendations
 app = FastAPI()
 
 @app.get("/")
@@ -30,3 +30,7 @@ def demo_5(company_name):
 @app.get("/director_success/{director_name1}")
 def demo_6(director_name1):
     return director_success(director_name=director_name1)
+
+@app.get("/recommender/{title2}")
+def demo_7(title2):
+    return get_recommendations(value=title2)
