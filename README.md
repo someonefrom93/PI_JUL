@@ -32,6 +32,10 @@ The architecture that I follow is completelly towards functionality and effitien
 
 The file .ipynb was used to run tests, and .py is the application. 
 
+And this is the deployment url
+
+[render deployment](https://demo-1-henry-pi.onrender.com/docs#/)
+
 # The EDA process
 
 Here I focused on outliers and of they could cause an effect on statisstics. You will see some transformation here also in spite of the previous ETL proccess.. but recall this, the ETL proccess was to delivery end points.. and some significant data was dropped in order to fit this into the memory contraint render enviroment (512mb and 0.5 cpu capability). 
