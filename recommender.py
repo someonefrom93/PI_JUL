@@ -16,13 +16,6 @@ tfidf_matrix = tfidf.fit_transform(data_sample["content"].fillna(""))
 
 cosine_similarities_ = linear_kernel(tfidf_matrix, tfidf_matrix)
 
-import sys
-sys.getsizeof(cosine_similarities_) / 1000000
-
-import psutil
-process = psutil.Process()
-
-print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
 
 
 def get_recommendations(value):
@@ -72,12 +65,4 @@ def get_recommendations(value):
     data_sample = pd.DataFrame(list(zip(index, recommendations, scores)), 
                       columns=['index','recommendation', 'cosine_similarity_score']) 
 
-    return print(data_sample)
-
-get_recommendations(value="Toy Story")
-
-
-import psutil
-process = psutil.Process()
-
-print(f"Memory used: {process.memory_info().rss / 1024 / 1024:.2f} MB")
+    return {"recommendations": data_sample["recommendation"].tolist()}
