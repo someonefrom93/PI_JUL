@@ -45,4 +45,4 @@ This modeln was built upon 2000 records out of the 4k of the dataframe in order 
 
 All this job you can see it in the eda.ipynb file and recommender.py file.
 
-![EDA worf flow for recomender](images/eda_work_flow.JPG)
+![EDA worf flow for recomender](images/eda_worf_flow.JPG)
